@@ -1,0 +1,176 @@
+<div *ngIf="isAuthenticated && userName">
+  <p>Welcome back, {{ userName }}!</p>
+  <p>
+    You have successfully authenticated against your Okta org, and have been redirected back to this application. You
+    now have an ID Token and access token in local storage.
+    Visit the <a href="/profile">My Profile</a> page to take a look inside the ID Token.
+  </p>
+</div>
+<br>
+
+<p-accordion>
+  <p-accordionTab header="Provide Sample Images" [selected]="true">
+    <h3 class="first">Upload Images</h3>
+    <div class="p-grid">
+      <div class="ui-g-12 ui-md-4">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="pi pi-user" style="line-height: 1.25;"></i></span>
+          <input type="text" size="37" pInputText placeholder="Name of the Person" [(ngModel)]="personToDetect">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ui three column grid" *ngIf="showProgressBar">
+      <div class="column">
+        <div class="ui divided selection list">
+          <a class="item">
+            <div class="ui purple horizontal label">Please Wait....</div>
+          </a>
+        </div>
+      </div>
+      <div class="column">
+        <p>
+          Detecting faces in the pictures...
+        </p>
+      </div>
+      <div class="column">
+        <p>
+          <p-progressBar mode="indeterminate" [style]="{'height': '10px'}"></p-progressBar>
+        </p>
+      </div>
+    </div>
+
+
+
+    <div class="ui one column grid" *ngIf="!true">
+      <div class="column">
+        <div class="ui raised segment">
+          <a class="ui orange ribbon label">Please Wait...</a>
+          <span>Model Creation...</span>
+          <p>
+            <br>
+          </p>
+          <p>
+            Detecting faces in the pictures...
+          </p>
+          <p>
+            <p-progressBar mode="indeterminate" [style]="{'height': '10px'}"></p-progressBar>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="ui two column centered grid" *ngIf="trainingComplete">
+      <div class="column">
+        <a class="ui green label massive">Ready to face detect: {{personToDetect}}, Click to Start!</a>
+      </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="p-grid">
+      <div class="p-col">
+        <p-fileUpload name="samples[]" uploadLabel="Train" customUpload="true" multiple="true"
+          (uploadHandler)="myUploader($event)" chooseLabel="Upload Sample Images">
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedTrainingFiles.length">
+              <li *ngFor="let file of uploadedTrainingFiles">{{file.name}} - {{file.size}} bytes</li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+    
+  </p-accordionTab>
+  <p-accordionTab header="Start Predicting!">
+    <div class="p-grid">
+      <div class="p-col">
+        <p-fileUpload name="predictSamples[]" chooseLabel="Upload Images" uploadLabel="Detect Faces" customUpload="true"
+          multiple="true" (uploadHandler)="predict($event)">
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedPredictionFiles.length">
+              <li *ngFor="let file of uploadedPredictionFiles">{{file.name}} - {{file.size}} bytes</li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div *ngIf="predictionComplete">
+      <div class="p-grid">
+        <div *ngFor="let file of predictedImages;let i = index;">
+          <!-- <div class="ui medium rectangle test ad" [attr.data-text]="file.filename">
+            <a href="https://google.com" class="ui medium image">
+              <img [src]="file.fileURL">
+            </a>
+          </div> -->
+
+
+          <div class="p-col" *ngIf="i%2 == 0">
+            <div class="box">
+              <p-card [header]="file.filename" subheader="Face Detection" [style]="{width: '360px'}"
+                styleClass="ui-card-shadow">
+                <p-header>
+                  <img src="Card" [src]="file.fileURL" height="230">
+                </p-header>
+                <br>
+                <div *ngFor="let face of file.faces">
+                  Person: {{face.person}}
+                  <br>
+                  Coordinates:
+                  <br>
+                  left: {{ face.coordinates.left}}
+                  top: {{ face.coordinates.top}}
+                </div>
+                <p-footer>
+                  <button pButton type="button" label="Save" icon="pi pi-check" style="margin-right: .25em"></button>
+                  <button pButton type="button" label="Cancel" icon="pi pi-times" class="ui-button-secondary"></button>
+                </p-footer>
+              </p-card>
+            </div>
+          </div>
+          <div class="p-col" *ngIf="i%2 == 1">
+            <div class="box">
+              <p-card [header]="file.filename" subheader="Face Detection" [style]="{width: '360px'}"
+                styleClass="ui-card-shadow">
+                <p-header>
+                  <img src="Card" [src]="file.fileURL" height="230">
+                </p-header>
+                <br>
+                <div *ngFor="let face of file.faces">
+                  Person: {{face.person}}
+                  <br>
+                  Coordinates:
+                  <br>
+                  left: {{ face.coordinates.left}}
+                  top: {{ face.coordinates.top}}
+                </div>
+                <p-footer>
+                  <button pButton type="button" label="Save" icon="pi pi-check" style="margin-right: .25em"></button>
+                  <button pButton type="button" label="Cancel" icon="pi pi-times" class="ui-button-secondary"></button>
+                </p-footer>
+              </p-card>
+            </div>
+          </div>
+
+
+          <br>
+
+        </div>
+      </div>
+
+
+    </div>
+  </p-accordionTab>
+
+
+  <!-- <div class="ui inverted segment">
+      <p></p>
+      <div class="ui inverted divider"></div>
+      <p></p>
+      <h4 class="ui horizontal inverted divider">
+        {{personToDetect}}
+      </h4>
+    </div> -->
+</p-accordion>
