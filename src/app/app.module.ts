@@ -45,6 +45,7 @@ const appRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    canActivate: [ OktaAuthGuard ]
   },
   {
     path: 'implicit/callback',

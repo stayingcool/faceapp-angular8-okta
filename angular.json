@@ -58,7 +58,7 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "okta-hosted-login:build",
-            "port": 8080
+            "port": 4200
           },
           "configurations": {
             "production": {
