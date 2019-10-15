@@ -8,8 +8,11 @@
       Face Detection
     </a>
     <a class="item" *ngIf="!isAuthenticated" routerLink="/login">Login</a>
-    <a id="messages-button" class="item" *ngIf="isAuthenticated" routerLink="/messages"><i aria-hidden="true" class="mail outline icon"></i>Messages</a>
-    <a id="profile-button" class="item" *ngIf="isAuthenticated" routerLink="/profile">Profile</a>
+    <a id="messages-button" class="item" *ngIf="isAuthenticated" routerLink="/home"><i aria-hidden="true"
+        class="home icon"></i>Home</a>
+    <a id="messages-button" class="item" *ngIf="isAuthenticated" routerLink="/pricing"><i aria-hidden="true"
+        class="dollar sign icon"></i>Pricing</a>
+
     <a id="logout-button" class="item" *ngIf="isAuthenticated" (click)="logout()">Logout</a>
   </div>
 </div>
@@ -19,7 +22,9 @@
 </div> -->
 
 <div class="p-grid" style="margin-top: 7em;margin-left: 2em;margin-right: 2em" p-align-center>
-    <div class="p-col"> <router-outlet></router-outlet></div>
+  <div class="p-col">
+    <router-outlet></router-outlet>
+  </div>
 </div>
 <!-- <div class="ui-g-12" style="margin-top: 7em;">
   

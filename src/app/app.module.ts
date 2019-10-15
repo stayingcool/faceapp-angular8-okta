@@ -15,7 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   OKTA_CONFIG,
@@ -27,7 +27,7 @@ import {
 import sampleConfig from './app.config';
 
 const oktaConfig = Object.assign({
-  onAuthRequired: ({oktaAuth, router}) => {
+  onAuthRequired: ({ oktaAuth, router }) => {
     // Redirect the user to your custom login page
     router.navigate(['/login']);
   }
@@ -45,7 +45,12 @@ const appRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [ OktaAuthGuard ]
+    canActivate: [OktaAuthGuard]
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [OktaAuthGuard]
   },
   {
     path: 'implicit/callback',
@@ -56,18 +61,23 @@ const appRoutes: Routes = [
     component: LoginComponent,
   },
   {
+    path: 'pricing',
+    component: PricingComponent,
+  },
+  {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [ OktaAuthGuard ],
+    canActivate: [OktaAuthGuard],
   },
   {
     path: 'messages',
     component: MessagesComponent,
-    canActivate: [ OktaAuthGuard ],
+    canActivate: [OktaAuthGuard],
   },
 ];
 
-import { PrimeNGModule } from './primeng.module'
+import { PrimeNGModule } from './primeng.module';
+import { PricingComponent } from './pricing/pricing.component'
 
 @NgModule({
   declarations: [
@@ -76,9 +86,11 @@ import { PrimeNGModule } from './primeng.module'
     ProfileComponent,
     MessagesComponent,
     LoginComponent,
+    PricingComponent,
   ],
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

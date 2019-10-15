@@ -21,6 +21,7 @@ export class SampleUploadService {
     config: Config;
     trainAPIURL = 'http://127.0.0.1:5001/train';
     predictAPIURL = 'http://127.0.0.1:5001/predict';
+    trainedFacesAPIURL = 'http://127.0.0.1:5001/trainedfaces';
 
     constructor(private http: HttpClient, private configService: ConfigService) {
         // TODO - Use config later
@@ -32,8 +33,8 @@ export class SampleUploadService {
 
     uploadSampleFiles(event, person: string, client: string): Observable<any> {
         // httpOptions.headers = httpOptions.headers.append('person', person);
-        httpOptions.headers = httpOptions.headers.set('person', person);
-        httpOptions.headers = httpOptions.headers.set('client', client);
+        httpOptions.headers = httpOptions.headers.set('person', person.toLowerCase());
+        httpOptions.headers = httpOptions.headers.set('client', client.toLowerCase());
         console.log(JSON.stringify(httpOptions.headers));
 
         let fileFormData = new FormData();
@@ -47,7 +48,7 @@ export class SampleUploadService {
     }
 
     predictFaces(event, client: string): Observable<IPredictedImage[]> {
-        httpOptions.headers = httpOptions.headers.set('client', client);
+        httpOptions.headers = httpOptions.headers.set('client', client.toLowerCase());
         let fileFormData = new FormData();
         event.files.forEach(element => {
             fileFormData.append("file", element);
@@ -72,5 +73,12 @@ export class SampleUploadService {
         // return an observable with a user-facing error message
         return throwError(
             'Something bad happened; please try again later.');
-    };
+    }
+
+    getTrainedFaces(client: string): Observable<any> {
+        httpOptions.headers = httpOptions.headers.set('client', client.toLowerCase());
+        return this.http.get<any>(this.trainedFacesAPIURL, httpOptions)
+            .pipe(catchError(this.handleError));
+
+    }
 }
