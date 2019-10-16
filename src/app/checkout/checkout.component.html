@@ -1,0 +1,7 @@
+<button (click)="checkout($event)" class="ui orange fluid button">
+  Upgrade for ${{ amount / 100 }}.00
+</button>
+
+<br>
+<br>
+<div *ngIf="loading">Loading....</div>

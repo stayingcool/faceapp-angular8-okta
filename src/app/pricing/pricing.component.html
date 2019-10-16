@@ -19,8 +19,8 @@
           <p> - Predict faces of upto 100 Images</p>
         </div>
       </div>
-      <div class="ui green fluid button">
-        Select
+      <div class="ui black fluid button disabled">
+        Current Plan
       </div>
     </div>
     <div class="five wide column">
@@ -31,7 +31,7 @@
               $5
             </div>
             <div class="label">
-              per 100
+              Per 1000 Images
             </div>
           </div>
         </div>
@@ -42,9 +42,7 @@
           <p> - Another great feature </p>
         </div>
       </div>
-      <div class="ui green fluid button">
-        Select
-      </div>
+      <stripe-checkout amount=1000 description='Per 1000 Images'></stripe-checkout>
     </div>
     <div class="five wide column">
       <div class="ui raised segments">
@@ -54,7 +52,7 @@
               $50
             </div>
             <div class="label">
-              per 10000 images
+              Subscription/month
             </div>
           </div>
         </div>
@@ -65,9 +63,7 @@
           <p> - Look. No additional CSS or anything </p>
         </div>
       </div>
-      <div class="ui green fluid button">
-        Select
-      </div>
+      <stripe-checkout amount=5000 description='Subscription/month'></stripe-checkout>
     </div>
   </div>
 </div>

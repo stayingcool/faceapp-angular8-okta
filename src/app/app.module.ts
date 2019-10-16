@@ -77,7 +77,8 @@ const appRoutes: Routes = [
 ];
 
 import { PrimeNGModule } from './primeng.module';
-import { PricingComponent } from './pricing/pricing.component'
+import { PricingComponent } from './pricing/pricing.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { PricingComponent } from './pricing/pricing.component'
     MessagesComponent,
     LoginComponent,
     PricingComponent,
+    CheckoutComponent
   ],
   imports: [
     FormsModule,
