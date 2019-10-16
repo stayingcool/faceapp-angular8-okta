@@ -31,7 +31,7 @@
     </div>
     <div class="column">
       <p>
-        Training the machine to detecting faces in the images...
+        Training the machine to detect faces in the images...
       </p>
     </div>
     <div class="column">
@@ -64,13 +64,16 @@
   <div class="p-grid">
     <div class="p-col">
       <p-fileUpload #trainingUploadForm name="samples[]" uploadLabel="Train" customUpload="true" multiple="true"
-        (uploadHandler)="train($event, trainingUploadForm)" chooseLabel="Upload Sample Images">
-        <ng-template pTemplate="content">
-          <ul *ngIf="uploadedTrainingFiles.length">
-            <li *ngFor="let file of uploadedTrainingFiles">{{file.name}} - {{file.size}} bytes</li>
-          </ul>
-        </ng-template>
+        (uploadHandler)="train($event, trainingUploadForm)" chooseLabel="Upload Sample Images"
+        invalidFileSizeMessageSummary='Free/Trial:'
+        invalidFileSizeMessageDetail='{0}: File size cannot be greater than 10 MB' maxFileSize="10000000"
+        accept="image/*" (onSelect)="onTrainingFilesUploadSelection($event)"
+        (onRemove)="onTrainingFileUploadRemoval($event)">
       </p-fileUpload>
+      <p-message severity="error" text="Please upload at least 2 Images to train" *ngIf="lesserThanTwoFiles">
+      </p-message>
+      <p-message severity="error" text="Free/Trial: Maximum number of images that can be uploaded is 5 in each attempt"
+        *ngIf="maximumNoOfTrainingFiles"></p-message>
     </div>
   </div>
 </p-fieldset>
@@ -114,13 +117,11 @@
   <br>
   <div class="p-grid">
     <div class="p-col">
+      <p-message severity="error" text="Free/Trial: Maximum number of images that can be uploaded is 10 in each attempt"
+        *ngIf="maximumNoOfPredictionFiles"></p-message>
       <p-fileUpload name="predictSamples[]" chooseLabel="Upload Images" uploadLabel="Detect Faces" customUpload="true"
-        multiple="true" (uploadHandler)="predict($event)">
-        <ng-template pTemplate="content">
-          <ul *ngIf="uploadedPredictionFiles.length">
-            <li *ngFor="let file of uploadedPredictionFiles">{{file.name}} - {{file.size}} bytes</li>
-          </ul>
-        </ng-template>
+        multiple="true" (uploadHandler)="predict($event)" (onRemove)="onPredictionFileUploadRemoval($event)"
+        (onSelect)="onPredictionFilesUploadSelection($event)">
       </p-fileUpload>
     </div>
   </div>

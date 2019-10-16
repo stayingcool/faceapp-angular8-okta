@@ -18,7 +18,6 @@ import { IPredictedImage } from './predicted.model.image';
 import { Validators, FormControl, FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { FileUpload } from 'primeng/fileupload';
-import { debugOutputAstAsTypeScript } from '@angular/compiler';
 
 interface ResourceServerExample {
   label: String;
@@ -40,12 +39,15 @@ export class HomeComponent implements OnInit {
   showFaceDetectionProgressBar: boolean;
   trainingComplete: boolean;
   predictionComplete: boolean;
+  maximumNoOfTrainingFiles: boolean;
+  maximumNoOfPredictionFiles: boolean;
   personToDetect: string;
   predictedImages: IPredictedImage[] = [];
   values2: string[] = ['one', 'two'];
   trainedFaces: string[] = [];
   trainingForm: FormGroup;
   @ViewChild(FormGroupDirective, { static: false }) formGroupDirective: FormGroupDirective;
+  lesserThanTwoFiles: boolean;
 
   constructor(public oktaAuth: OktaAuthService, private sampleUploadService: SampleUploadService,
     private sanitizer: DomSanitizer, private fb: FormBuilder) {
@@ -67,7 +69,78 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  train(event: Event, trainingFileUpload: FileUpload) {
+  onTrainingFilesUploadSelection(event) {
+    for (let file of event.files) {
+      let r = this.uploadedTrainingFiles.findIndex(item => item.name === file.name);
+      if (r === -1)
+        this.uploadedTrainingFiles.push(file);
+    }
+    this.uploadedTrainingFiles.push();
+
+    if (this.uploadedTrainingFiles.length < 2) {
+      this.lesserThanTwoFiles = true;
+      return;
+    } else
+      this.lesserThanTwoFiles = false;
+
+    this.checkMaximumTrainingUploadCount();
+  }
+
+  onTrainingFileUploadRemoval(event) {
+    this.uploadedTrainingFiles.splice(this.uploadedTrainingFiles.findIndex(item => item.name === event.file.name), 1);
+    if (this.uploadedTrainingFiles.length < 2) {
+      this.lesserThanTwoFiles = true;
+      return;
+    } else
+      this.lesserThanTwoFiles = false;
+
+    this.checkMaximumTrainingUploadCount();
+  }
+
+  onPredictionFilesUploadSelection(event) {
+    for (let file of event.files) {
+      let r = this.uploadedPredictionFiles.findIndex(item => item.name === file.name);
+      if (r === -1)
+        this.uploadedPredictionFiles.push(file);
+    }
+    this.uploadedPredictionFiles.push();
+
+    if (this.uploadedPredictionFiles.length < 2) {
+      this.lesserThanTwoFiles = true;
+      return;
+    } else
+      this.lesserThanTwoFiles = false;
+
+    this.checkMaximumPredictionUploadCount();
+  }
+
+  onPredictionFileUploadRemoval(event) {
+    this.uploadedPredictionFiles.splice(this.uploadedPredictionFiles.findIndex(item => item.name === event.file.name), 1);
+    this.checkMaximumPredictionUploadCount();
+  }
+
+  checkMaximumTrainingUploadCount() {
+    if (this.uploadedTrainingFiles.length > 5)
+      this.maximumNoOfTrainingFiles = true
+    else
+      this.maximumNoOfTrainingFiles = false;
+  }
+
+  checkMaximumPredictionUploadCount() {
+    console.log('Checking maximum allowed upload count...');
+    if (this.uploadedPredictionFiles.length > 10)
+      this.maximumNoOfPredictionFiles = true
+    else
+      this.maximumNoOfPredictionFiles = false;
+  }
+
+  train(event, trainingFileUpload: FileUpload) {
+    if (this.maximumNoOfTrainingFiles)
+      return;
+
+    if (this.lesserThanTwoFiles)
+      return;
+
     if (this.trainingForm.get('personToDetect').value)
       this.personToDetect = this.trainingForm.get('personToDetect').value.toLowerCase();
     else {
@@ -90,10 +163,13 @@ export class HomeComponent implements OnInit {
         this.formGroupDirective.resetForm();
       }, 3 * 1000);
 
-    })
+    });
   }
 
   predict(event) {
+    if (this.maximumNoOfPredictionFiles)
+      return;
+
     this.showFaceDetectionProgressBar = true;
     this.predictedImages = [];
 
@@ -122,6 +198,14 @@ export class HomeComponent implements OnInit {
       }, 3 * 1000);
 
     })
+  }
+
+  verifyDownloadCount(event, trainingFileUpload) {
+    if (event.files.length < 2) {
+      this.lesserThanTwoFiles = true;
+      return;
+    } else
+      this.lesserThanTwoFiles = false;
   }
 
 }
